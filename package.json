@@ -1,7 +1,7 @@
 {
   "name": "book_app",
   "version": "1.0.0",
-  "description": "",
+  "description": "**Author**: Michael Goseco\r **Version**: 1.0.5",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,5 +25,6 @@
     "method-override": "^3.0.0",
     "pg": "^7.7.1",
     "superagent": "^4.0.0"
-  }
+  },
+  "keywords": []
 }
