@@ -10,13 +10,13 @@
     My Books
   </header>
   <section class="book-view container">
-    <h2>Total Books: <%= results.length %></h2>
+    <h2 id="total">Total Books: <%= results.length %></h2>
     <ul>
       <% results.forEach( book => { %>
         <li class="book-item" data-id="<%= book.id %>">
           <img src="<%= book.image_url %>">
-          <p>Title: <%= book.title %></p>
-          <p>Author: <%= book.author %></p>
+          <p id="title">Title: <%= book.title %></p>
+          <p id="author">Author: <%= book.author %></p>
           <a class="button" href="/books/<%= book.id %>">View Details</a>
         </li>
       <% }) %>
