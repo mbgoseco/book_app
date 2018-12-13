@@ -1,9 +1,5 @@
 @import url( 'https://fonts.googleapis.com/css?family=Bree+Serif|Paytone+One|Prata');
 
-body{
-  
-}
-
 h1{
   margin-left: auto;
   margin-right: auto;
@@ -26,7 +22,7 @@ img{
   box-shadow: .3vw .5vw rgb(105, 105, 103);
 }
 
-#title{
+#title, #total{
   text-align: center;
   font-family: 'Paytone One', sans-serif;
   font-size: 3vw;
@@ -38,7 +34,7 @@ img{
   
 }
 
-#author{
+#author, #isbn, #bookshelf{
   text-align: center;
   font-family: 'Bree Serif', serif;
   font-size: 2.7vw;
@@ -46,8 +42,8 @@ img{
   margin-left: 25%;
   margin-top: .5%;
   margin-bottom: .5%;
-  text-shadow:
 }
+
 #description{
   text-align: center;
   font-size: 2vw;
@@ -123,7 +119,7 @@ img{
 
 #link1{
   display : inline;
-  position:relative;
+  position: relative;
   font-size: 2vw;
   width: 67%;
 }
