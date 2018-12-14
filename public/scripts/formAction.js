@@ -13,7 +13,7 @@
 //   $('#select-bookshelf').append(`<option value="${bookshelf}">${bookshelf}</option>`);
 // });
 
-$('.selectBook').on('click', function(event) {
+$('.selectBook').on('click', function() {
   let id = $(this).attr('value');
   console.log('value: ', id);
   if ($(`#${id}`).attr('class') === 'hide') {
@@ -27,7 +27,7 @@ $('.selectBook').on('click', function(event) {
   }
 });
 
-$('.updateBook').on('click', function(event) {
+$('.updateBook').on('click', function() {
   if ($('.update').hasClass('hide')) {
     console.log('visible : cancel')
     $('.update').toggleClass('hide');
