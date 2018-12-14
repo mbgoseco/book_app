@@ -12,13 +12,13 @@
   <ul>
     <% books.forEach( (book, idx) => { %>
       <li>
-        <img src="<%= book.thumbnail %>">
+        <img src="<%= book.image_url %>">
         <p id="title">Title: <%= book.title %></p>
         <p id="author">Author: <%= book.author %></p>
         <p id="isbn">ISBN #: <%= book.isbn %></p>
         <p id="description">Description: <%= book.description %></p>
         <div id="<%= idx %>" class="hide">
-          <%- include('../../layout/form', {formAction: 'update', book: book }) %>
+          <%- include('../../layout/form', {formAction: 'add', book: book }) %>
         </div>
         <button class="selectBook" value="<%= idx %>">Select Book</button>
       </li>

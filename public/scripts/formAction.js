@@ -1,17 +1,17 @@
 'use strict';
 
-let options = [];
-let SQL = 'SELECT DISTINCT bookshelf FROM books;';
-client.query(SQL).then(results => {
-  results.rows.map(book => {
-    options.push(book.bookshelf);
-  });
-}).catch(err => handleError(err, res));
-console.log(options);
+// let options = [];
+// let SQL2 = 'SELECT DISTINCT bookshelf FROM books;';
+// client.query(SQL2).then(results => {
+//   results.rows.map(book => {
+//     options.push(book.bookshelf);
+//   });
+// }).catch(err => handleError(err, res));
+// console.log(options);
 
-options.forEach(bookshelf => {
-  $('#select-bookshelf').append(`<option value="${bookshelf}">${bookshelf}</option>`);
-});
+// options.forEach(bookshelf => {
+//   $('#select-bookshelf').append(`<option value="${bookshelf}">${bookshelf}</option>`);
+// });
 
 $('.selectBook').on('click', function(event) {
   let id = $(this).attr('value');
@@ -28,10 +28,14 @@ $('.selectBook').on('click', function(event) {
 });
 
 $('.updateBook').on('click', function(event) {
-  if ($('.update').attr('class') === 'hide') {
+  if ($('.update').hasClass('hide')) {
+    console.log('visible : cancel')
     $('.update').toggleClass('hide');
+    $(`.updateBook`).text('Cancel');
   } else {
+    console.log('hidden : update book')
     $('.update').toggleClass('hide');
+    $(`.updateBook`).text('Update Details');
   }
 });
 

@@ -34,40 +34,63 @@ app.listen(PORT, () => {
   console.log(`listening on port ${PORT}`);
 });
 
-// Test route
-app.get('/hello', (req, res) => {
-  res.render('./pages/index');
-});
-
 // Error handler
 function handleError(err, res) {
   console.error('ERROR', err);
   res.render('./pages/error', {error: 'Something went wrong! Please refresh your page.'});
 }
 
+// Test route
+app.get('/hello', (req, res) => {
+  res.render('./pages/index');
+});
 // Route to main page of saved books
 app.get('/', getBooks);
-
 // Route to show book details
 app.get('/books/:book_id', getDetails);
-
 app.get('/add', showForm);
 app.post('/add', addBook);
+// Route to search page
+app.get('/search', (req, res) => {
+  res.render('./pages/searches/search');
+});
+app.post('/searches', getResults);
+// Route to update book details
+app.put('/update/:book_id', updateBook);
+// Catch-all route
+app.get('*', (req, res) => res.status(404).send('404 Page not found'));
+
 
 function getBooks(req, res) {
   let SQL = 'SELECT * from books;';
 
-  return client.query(SQL).then(results => res.render('./pages/index', {results: results.rows})).catch(err => handleError(err, res));
+  return client.query(SQL)
+    .then(results => res.render('./pages/index', {results: results.rows}))
+    .catch(err => handleError(err, res));
 }
 
 function getDetails(req, res) {
   let SQL = 'SELECT * FROM books WHERE id=$1;';
   let values = [req.params.book_id];
-  console.log('getDetails values = ', values);
 
   return client.query(SQL, values).then(result => {
     return res.render('./pages/books/detail', {book: result.rows[0]});
   })
+}
+
+function getResults(req, res) {
+  let input = req.body;
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${input.search_field}+${input.searchby}:${input.search_field}`;
+  return superagent.get(url)
+    .then(data => {
+      const results = data.body.items.map(item => {
+        const book = new Book(item);
+        return book;
+      });
+      return results;
+    })
+    .then(results => res.render('./pages/searches/show', {books: results}))
+    .catch(error => handleError(error, res));
 }
 
 // Shows the form to add a book to database
@@ -81,50 +104,30 @@ function addBook (req, res) {
   let SQL = 'INSERT INTO books(author, title, isbn, image_url, description, bookshelf) VALUES ($1, $2, $3, $4, $5, $6);';
   let values = [author, title, isbn, image_url, description, bookshelf];
 
-  return client.query(SQL, values).then(res.redirect('/')).catch(err => handleError(err, res));
+  return client.query(SQL, values)
+    .then(res.redirect('/'))
+    .catch(err => handleError(err, res));
 }
 
-// Route to search page
-app.get('/search', (req, res) => {
-  res.render('./pages/searches/search');
-});
+function updateBook(req, res) {
+  let {author, title, isbn, image_url, description, bookshelf} = req.body;
+  let SQL = 'UPDATE books SET author=$1, title=$2, isbn=$3, image_url=$4, description=$5, bookshelf=$6 WHERE id=$7;';
+
+  let values = [author, title, isbn, image_url, description, bookshelf, req.params.book_id];
+  client.query(SQL, values)
+    .then(res.redirect(`/books/${req.params.book_id}`))
+    .catch(err => handleError(err, res));
+}
 
 // Book model
 function Book(item) {
-  this.thumbnail = item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/128x200.png?text=Image+Unavailable';
+  this.image_url = item.volumeInfo.imageLinks ? item.volumeInfo.imageLinks.thumbnail : 'https://via.placeholder.com/128x200.png?text=Image+Unavailable';
   this.title = item.volumeInfo.title || 'N/A';
   this.author = item.volumeInfo.authors || 'N/A';
   this.isbn = item.volumeInfo.industryIdentifiers[0].identifier || 'N/A';
   this.description = item.volumeInfo.description || 'N/A';
 }
 
-app.post('/searches', getResults);
 
-function getResults(req, res) {
-  let input = req.body;
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${input.search_field}+${input.searchby}:${input.search_field}`;
-  return superagent.get(url).then(data => {
-    const results = data.body.items.map(item => {
-      const book = new Book(item);
-      return book;
-    });
-    // console.log('line 50: ', results);
-    return results;
-  }).then(results => res.render('./pages/searches/show', {books: results})).catch(error => handleError(error, res));
-}
 
-// jQuery events to load form on search results
-// $('.selectBook').on('click', (event) => {
-//   let id = event.target.value;
-//   console.log('value: ', id);
-//   if ($(event.target.is(':hidden'))) {
-//     $(`#${id}`).slideDown();
-//     $(`.selectBook[value='${id}']`).text('Cancel');
-//   } else {
-//     $(`#${id}`).slideUp();
-//     $(`.selectBook[value='${id}']`).text('Select Book');
-//   }
-// })
 
-// Catch-all route
-app.get('*', (req, res) => res.status(404).send('404 Page not found'));
