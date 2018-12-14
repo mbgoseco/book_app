@@ -57,10 +57,12 @@ app.get('/search', (req, res) => {
 app.post('/searches', getResults);
 // Route to update book details
 app.put('/update/:book_id', updateBook);
+// Route to delete book from saved books
+app.delete('/delete/:book_id', deleteBook);
 // Catch-all route
 app.get('*', (req, res) => res.status(404).send('404 Page not found'));
 
-
+// Displays collection of saved books
 function getBooks(req, res) {
   let SQL = 'SELECT * from books;';
 
@@ -69,15 +71,18 @@ function getBooks(req, res) {
     .catch(err => handleError(err, res));
 }
 
+// Selects a book from collections and renders details to page
 function getDetails(req, res) {
   let SQL = 'SELECT * FROM books WHERE id=$1;';
   let values = [req.params.book_id];
 
-  return client.query(SQL, values).then(result => {
-    return res.render('./pages/books/detail', {book: result.rows[0]});
-  })
+  return client.query(SQL, values)
+    .then(result => {
+      return res.render('./pages/books/detail', {book: result.rows[0]});
+    })
 }
 
+// Gets search results and renders to page
 function getResults(req, res) {
   let input = req.body;
   const url = `https://www.googleapis.com/books/v1/volumes?q=${input.search_field}+${input.searchby}:${input.search_field}`;
@@ -109,6 +114,7 @@ function addBook (req, res) {
     .catch(err => handleError(err, res));
 }
 
+// Updates DB with user input details
 function updateBook(req, res) {
   let {author, title, isbn, image_url, description, bookshelf} = req.body;
   let SQL = 'UPDATE books SET author=$1, title=$2, isbn=$3, image_url=$4, description=$5, bookshelf=$6 WHERE id=$7;';
@@ -116,6 +122,15 @@ function updateBook(req, res) {
   let values = [author, title, isbn, image_url, description, bookshelf, req.params.book_id];
   client.query(SQL, values)
     .then(res.redirect(`/books/${req.params.book_id}`))
+    .catch(err => handleError(err, res));
+}
+
+// Deletes book from DB and saved books
+function deleteBook(req, res) {
+  let SQL = 'DELETE FROM books WHERE id=$1;';
+  let id = [req.params.book_id];
+  client.query(SQL, id)
+    .then(res.redirect('/'))
     .catch(err => handleError(err, res));
 }
 
@@ -127,7 +142,3 @@ function Book(item) {
   this.isbn = item.volumeInfo.industryIdentifiers[0].identifier || 'N/A';
   this.description = item.volumeInfo.description || 'N/A';
 }
-
-
-
-

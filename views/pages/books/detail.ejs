@@ -20,7 +20,10 @@
         <p id="description">Description: <%= book.description %></p>
         <div class="update hide">   
           <%- include('../../layout/form', {formAction: 'update', book: book }) %>
-          <button class="deleteBook">Delete Book</button>
+          <form action="/delete/<%= book.id %>" method="post">
+            <input type="hidden" name="_method" value="delete">
+            <button class="deleteBook" type="submit">Delete Book</button>
+          </form>
         </div>
         <button class="updateBook">Update Details</button>
       </li>
