@@ -21,6 +21,30 @@ form {
   width: 100vw;
 }
 
+input[name="author"] {
+    grid-area: author;
+}
+
+input[name="title"] {
+  grid-area: title;
+}
+
+input[name="isbn"] {
+  grid-area: isbn;
+}
+
+input[name="image_url"] {
+  grid-area: image;
+}
+
+input[name="description"] {
+  grid-area: desc;
+}
+
+input[name="bookshelf"] {
+  grid-area: bookshelf;
+}
+
 #intitle, #inauthor, button, .button {
   display: block;
   width: 50%;

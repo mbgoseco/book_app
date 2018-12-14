@@ -6,3 +6,15 @@ body {
     "head2"
     "form";
 }
+
+form#template {
+  grid-template-columns: 50vw;
+  grid-template-rows: auto;
+  grid-template-areas: 
+  "author"
+  "title"
+  "isbn"
+  "image"
+  "desc"
+  "bookshelf";
+}

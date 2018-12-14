@@ -20,9 +20,9 @@
         <p id="description">Description: <%= book.description %></p>
         <div class="update hide">   
           <%- include('../../layout/form', {formAction: 'update', book: book }) %>
+          <button class="deleteBook">Delete Book</button>
         </div>
         <button class="updateBook">Update Details</button>
-        <button class="deleteBook">Delete Book</button>
       </li>
     </ul>
   </section>
